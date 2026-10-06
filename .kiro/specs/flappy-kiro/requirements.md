@@ -30,6 +30,7 @@ Flappy Kiro is a retro-style endless side-scrolling browser game inspired by Fla
 - **Pause State**: A game state in which the Game Loop is suspended and a pause overlay is shown.
 - **Background Music**: A looping ambient audio track that plays throughout gameplay.
 - **Score Pop**: A brief floating "+1" text animation that appears above the score display when a point is earned.
+- **Config Module**: A single JavaScript module (`config.js`) that exports all tunable game constants as a structured object, keeping magic numbers out of game logic.
 
 ---
 
@@ -171,3 +172,17 @@ Flappy Kiro is a retro-style endless side-scrolling browser game inspired by Fla
 3. THE Game SHALL render score text using a monospace or pixel-style font with a minimum rendered size of 16px, ensuring legibility at all supported canvas sizes.
 4. THE Game SHALL render Kiro using the `assets/ghosty.png` sprite scaled uniformly (preserving the original width-to-height ratio) so that no axis is stretched independently of the other.
 5. THE Game SHALL rotate Kiro's sprite based on current vertical velocity: rotating up to +10 degrees when velocity is at or above 0 (rising or level) and rotating down to −25 degrees when velocity is at or above the maximum downward clamp, with linear interpolation between these bounds.
+
+---
+
+### Requirement 9: Central Configuration Module
+
+**User Story:** As a developer, I want all game constants and tunable parameters defined in a single configuration file, so that I can adjust gameplay feel without hunting through game logic code.
+
+#### Acceptance Criteria
+
+1. THE Game SHALL define a `config.js` module at the project root that exports a single `CONFIG` object containing all numeric constants and tunable parameters used by the game.
+2. THE `CONFIG` object SHALL be organised into named sub-objects grouping related constants: `physics` (gravity, flapVelocity, terminalVelocity, lerpFactor), `pipes` (speed, spawnInterval, gapHeight, gapMinMargin, width), `player` (hitboxInset, spriteWidth, spriteHeight, startXPercent), `display` (fallbackWidth, fallbackHeight, scoreFontSize, shakeAmplitude, shakeDuration), `clouds` (an array of layer descriptors each with speed, opacity, and count), and `fx` (particlesPerSecond, particleFadeDuration, scorePopDistance, scorePopDuration, invincibilityFrames, restartDelay).
+3. THE Game SHALL import constants exclusively from `config.js` and SHALL NOT define magic numbers inline in any other module.
+4. WHEN a developer changes a value in `config.js` and reloads the browser, THE Game SHALL reflect the updated constant without requiring changes to any other file.
+5. THE `CONFIG` object SHALL include default values that produce a playable game experience matching the acceptance criteria defined in Requirements 2, 3, 4, and 7 (e.g. gravity: 0.5, flapVelocity: -8, terminalVelocity: 10, lerpFactor: 0.85, pipe speed: 3, gapHeight: 150).
